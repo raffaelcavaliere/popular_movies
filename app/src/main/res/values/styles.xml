@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="WhiteText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="WhiteText_Medium" parent="WhiteText">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="WhiteText_Italic" parent="WhiteText">
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="Activity_Header" parent="WhiteText">
+        <item name="android:padding">30dp</item>
+        <item name="android:background">@color/accent_material_light</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/moviegrid_item_poster"
+        android:layout_gravity="center|bottom|left|right|top"
+        android:src="@mipmap/ic_launcher"
+        android:adjustViewBounds="false"
+        android:layout_margin="10dp"
+        android:minHeight="240dp" />
+
+</FrameLayout>

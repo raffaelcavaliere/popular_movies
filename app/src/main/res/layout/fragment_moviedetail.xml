@@ -1,0 +1,102 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.raffaelcavaliere.popularmovies.DetailActivityFragment"
+            android:orientation="vertical"
+            android:measureWithLargestChild="false"
+            android:baselineAligned="false">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chappie"
+                android:id="@+id/movie_detail_title"
+                android:padding="30dp"
+                android:singleLine="false"
+                android:background="@color/accent_material_light"
+                style="@style/Activity_Header" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="20dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:useDefaultMargins="true"
+                    android:orientation="horizontal"
+                    android:columnCount="2"
+                    android:rowCount="1">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/movie_detail_poster"
+                        android:src="@mipmap/ic_launcher"
+                        android:layout_column="0"
+                        android:layout_row="0"
+                        android:minWidth="140dp"
+                        android:minHeight="240dp"
+                        android:layout_gravity="top" />
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_row="0"
+                        android:layout_column="1"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2015/04/03"
+                            android:id="@+id/movie_detail_release_date"
+                            android:singleLine="false"
+                            style="@style/WhiteText_Medium" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Medium Text"
+                            android:id="@+id/movie_detail_vote_average"
+                            style="@style/WhiteText_Italic"
+                            android:paddingTop="20dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Medium Text"
+                            android:id="@+id/movie_detail_vote_count"
+                            style="@style/WhiteText" />
+                    </LinearLayout>
+
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description of this movie.  This is a great movie and I have nothing else to say about it."
+                    android:id="@+id/movie_detail_overview"
+                    android:layout_marginTop="10dp"
+                    style="@style/WhiteText" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
