@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -49,6 +50,7 @@ public class MovieDbArrayAdapter extends ArrayAdapter<FetchMovieDbTask.MovieDbIt
 
             holder = new MovieDbItemHolder();
             holder.imgPoster = (ImageView)row.findViewById(R.id.moviegrid_item_poster);
+
 
             row.setTag(holder);
         }
