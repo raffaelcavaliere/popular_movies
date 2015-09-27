@@ -21,7 +21,7 @@ import java.net.URL;
 public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTaskParams,Void,FetchMovieDbTask.MovieDbItem[]> {
 
     final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/";
-    final String MOVIE_DB_API_KEY = "3086d73199a86d247ea72fdfdf26aac1";
+    final String MOVIE_DB_API_KEY = "";
 
     public final static String MOVIE_DB_SEARCH = "search";
     public final static String MOVIE_DB_FIND = "find";
