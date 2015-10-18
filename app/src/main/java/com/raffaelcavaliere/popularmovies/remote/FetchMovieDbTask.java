@@ -1,8 +1,10 @@
-package com.raffaelcavaliere.popularmovies;
+package com.raffaelcavaliere.popularmovies.remote;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.raffaelcavaliere.popularmovies.data.MovieDbItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,10 +20,10 @@ import java.net.URL;
 /**
  * Created by raffaelcavaliere on 2015-09-23.
  */
-public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTaskParams,Void,FetchMovieDbTask.MovieDbItem[]> {
+public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTaskParams,Void,MovieDbItem[]> {
 
-    final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/";
-    final String MOVIE_DB_API_KEY = "";
+    public final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/";
+    public final static String MOVIE_DB_API_KEY = "";
 
     public final static String MOVIE_DB_SEARCH = "search";
     public final static String MOVIE_DB_FIND = "find";
@@ -35,35 +37,13 @@ public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTas
         public String type = MOVIE_DB_DISCOVER;
         public String format = MOVIE_DB_MOVIE;
         public String sort = MOVIE_DB_POPULARITY_SORT;
+        public int page = 1;
 
-        public FetchMovieDbTaskParams(String _type, String _format, String _sort) {
+        public FetchMovieDbTaskParams(String _type, String _format, String _sort, int _page) {
             this.type = _type;
             this.format = _format;
             this.sort = _sort;
-        }
-    }
-
-    public class MovieDbItem {
-        public String backdropPath;
-        public long id;
-        public String title;
-        public String overview;
-        public String releaseDate;
-        public String posterPath;
-        public double popularity;
-        public double voteAverage;
-        public long voteCount;
-
-        public MovieDbItem (String _backdropPath, long _id, String _title, String _overview, String _releaseDate, String _posterPath, double _popularity, double _voteAverage, long _voteCount) {
-            this.backdropPath = _backdropPath;
-            this.id = _id;
-            this.title = _title;
-            this.overview = _overview;
-            this.releaseDate = _releaseDate;
-            this.posterPath = _posterPath;
-            this.popularity = _popularity;
-            this.voteAverage = _voteAverage;
-            this.voteCount = _voteCount;
+            this.page = _page;
         }
     }
 
@@ -98,7 +78,7 @@ public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTas
             double popularity = item.getDouble(MDB_POPULARITY);
             double voteAverage = item.getDouble(MDB_VOTE_AVERAGE);
             long voteCount = item.getLong(MDB_VOTE_COUNT);
-            movieDbData[i] = new MovieDbItem(backdropPath, id, title, overview, releaseDate, posterPath, popularity, voteAverage, voteCount);
+            movieDbData[i] = new MovieDbItem(format, backdropPath, id, title, overview, releaseDate, posterPath, popularity, voteAverage, voteCount);
         }
 
         return movieDbData;
@@ -118,6 +98,7 @@ public class FetchMovieDbTask extends AsyncTask<FetchMovieDbTask.FetchMovieDbTas
                     .appendPath(params[0].format)
                     .appendQueryParameter("sort_by", params[0].sort)
                     .appendQueryParameter("vote_count.gte", "50") //this is to eliminate high-rated films with very few votes
+                    .appendQueryParameter("page", String.valueOf(params[0].page))
                     .appendQueryParameter("api_key", MOVIE_DB_API_KEY).build();
             URL url = new URL(uri.toString());
             Log.i("URL", uri.toString());

@@ -1,4 +1,4 @@
-package com.raffaelcavaliere.popularmovies;
+package com.raffaelcavaliere.popularmovies.local;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,13 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.raffaelcavaliere.popularmovies.R;
+import com.raffaelcavaliere.popularmovies.SettingsActivity;
+import com.raffaelcavaliere.popularmovies.remote.FetchMovieDetailFragment;
 
-public class DetailActivity extends AppCompatActivity {
+
+public class FavoriteMovieDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_favorites_moviedetail);
+        if (savedInstanceState == null) {
+            FavoriteMovieDetailFragment detailFragment = new FavoriteMovieDetailFragment();
+            detailFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.favorite_moviedetail_container, detailFragment)
+                    .commit();
+        }
     }
 
 

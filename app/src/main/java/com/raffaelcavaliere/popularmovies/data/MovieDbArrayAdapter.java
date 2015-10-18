@@ -1,16 +1,15 @@
-package com.raffaelcavaliere.popularmovies;
+package com.raffaelcavaliere.popularmovies.data;
 
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.raffaelcavaliere.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by raffaelcavaliere on 2015-09-25.
  */
-public class MovieDbArrayAdapter extends ArrayAdapter<FetchMovieDbTask.MovieDbItem> {
+public class MovieDbArrayAdapter extends ArrayAdapter<MovieDbItem> {
 
     public static final String MOVIE_DB_IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
     public static final String MOVIE_DB_XSMALL_IMAGE_PATH = "w92";
@@ -29,9 +28,9 @@ public class MovieDbArrayAdapter extends ArrayAdapter<FetchMovieDbTask.MovieDbIt
 
     private Context context;
     private int layoutResourceId;
-    private ArrayList<FetchMovieDbTask.MovieDbItem> items;
+    private ArrayList<MovieDbItem> items;
 
-    public MovieDbArrayAdapter(Context context, int layoutResourceId, ArrayList<FetchMovieDbTask.MovieDbItem> items) {
+    public MovieDbArrayAdapter(Context context, int layoutResourceId, ArrayList<MovieDbItem> items) {
         super(context, layoutResourceId, items);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -41,7 +40,7 @@ public class MovieDbArrayAdapter extends ArrayAdapter<FetchMovieDbTask.MovieDbIt
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        MovieDbItemHolder holder = null;
+        MovieDbItemHolder holder;
 
         if(row == null)
         {
@@ -59,7 +58,7 @@ public class MovieDbArrayAdapter extends ArrayAdapter<FetchMovieDbTask.MovieDbIt
             holder = (MovieDbItemHolder)row.getTag();
         }
 
-        FetchMovieDbTask.MovieDbItem item = items.get(position);
+        MovieDbItem item = items.get(position);
         Uri uri = Uri.parse(MOVIE_DB_IMAGE_BASE_URL).buildUpon()
                 .appendPath(MOVIE_DB_LARGE_IMAGE_PATH)
                 .appendEncodedPath(item.posterPath).build();

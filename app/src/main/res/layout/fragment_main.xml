@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.raffaelcavaliere.popularmovies.MainActivityFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_fetch"
+            android:id="@+id/btn_browse_online"
+            android:layout_gravity="center_horizontal"
+            android:height="60dp" />
+
+        <Button
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_favorites"
+            android:id="@+id/btn_view_favorites"
+            android:layout_gravity="center_horizontal"
+            android:height="60dp" />
+    </LinearLayout>
+</FrameLayout>

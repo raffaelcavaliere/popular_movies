@@ -1,0 +1,5 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fetch_moviedetail_container"
+    android:name="com.raffaelcavaliere.popularmovies.remote.FetchMovieDetailFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

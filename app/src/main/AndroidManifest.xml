@@ -11,32 +11,65 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat" >
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_settings"
-            android:parentActivityName=".MainActivity" >
+            android:name=".remote.FetchActivity"
+            android:label="@string/title_fetch"
+            android:launchMode="singleTask" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.raffaelcavaliere.popularmovies.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".DetailActivity"
-            android:label="@string/title_activity_detail"
-            android:parentActivityName=".MainActivity" >
+            android:name=".local.FavoriteActivity"
+            android:label="@string/title_favorites"
+            android:launchMode="singleTask" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.raffaelcavaliere.popularmovies.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_settings" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".remote.FetchMovieDetailActivity"
+            android:label="@string/title_details"
+            android:parentActivityName=".remote.FetchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".remote.FetchActivity" />
+        </activity>
+        <activity
+            android:name=".local.FavoriteMovieDetailActivity"
+            android:label="@string/title_details"
+            android:parentActivityName=".local.FavoriteActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".local.FavoriteActivity" />
+        </activity>
+
+        <provider
+            android:name=".data.PopularMoviesProvider"
+            android:authorities="com.raffaelcavaliere.popularmovies"
+            android:enabled="true"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:label="PopularMoviesProvider"
+            android:readPermission="com.raffaelcavaliere.popularmovies.READ"
+            android:writePermission="com.raffaelcavaliere.popularmovies.WRITE" />
+
     </application>
 
 </manifest>

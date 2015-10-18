@@ -1,17 +1,15 @@
 package com.raffaelcavaliere.popularmovies;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -19,17 +17,21 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.raffaelcavaliere.popularmovies.data.MovieDbArrayAdapter;
+import com.raffaelcavaliere.popularmovies.data.MovieDbContract;
+import com.raffaelcavaliere.popularmovies.data.MovieDbItem;
+import com.raffaelcavaliere.popularmovies.remote.FetchMovieDetailActivity;
 
 import java.util.ArrayList;
 
-public class MovieGridFragment extends Fragment implements AbsListView.OnItemClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class MovieGridFragment extends Fragment implements AbsListView.OnItemClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    ArrayList<FetchMovieDbTask.MovieDbItem> movieDbData = new ArrayList<FetchMovieDbTask.MovieDbItem>();
-    private OnFragmentInteractionListener mListener;
-    private GridView mListView;
-    private MovieDbArrayAdapter mAdapter;
-    private SharedPreferences preferences;
+    protected ArrayList<MovieDbItem> movieDbData =  new ArrayList<>();
+    protected OnFragmentInteractionListener mListener;
+    protected GridView mListView;
+    protected MovieDbArrayAdapter mAdapter;
+    SharedPreferences preferences;
 
     public MovieGridFragment() {
         this.setHasOptionsMenu(true);
@@ -38,9 +40,6 @@ public class MovieGridFragment extends Fragment implements AbsListView.OnItemCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        preferences.registerOnSharedPreferenceChangeListener(this);
-        refreshMovieList();
     }
 
     @Override
@@ -50,32 +49,21 @@ public class MovieGridFragment extends Fragment implements AbsListView.OnItemCli
         mAdapter = new MovieDbArrayAdapter(getActivity(), R.layout.moviegrid_item, movieDbData);
         // Set the adapter
         mListView = (GridView) view.findViewById(R.id.movieGrid);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
+
+        loadMovieData();
 
         return view;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            refreshMovieList();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        preferences.registerOnSharedPreferenceChangeListener(this);
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -88,56 +76,43 @@ public class MovieGridFragment extends Fragment implements AbsListView.OnItemCli
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        refreshMovieList();
-    }
-
-    public void refreshMovieList() {
-        ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if (!isConnected) {
-            Toast.makeText(getActivity(),"No internet connection !", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        FetchMovieDbTask f = new FetchMovieDbTask() {
-            @Override
-            protected void onPostExecute(MovieDbItem[] result) {
-                super.onPostExecute(result);
-                movieDbData.clear();
-                for (int i = 0; i < result.length; i++)
-                    movieDbData.add(result[i]);
-                mAdapter.notifyDataSetChanged();
-            }
-        };
-        String pref_format = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_format", FetchMovieDbTask.MOVIE_DB_MOVIE);
-        String pref_sort = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("pref_sort", FetchMovieDbTask.MOVIE_DB_POPULARITY_SORT);
-        FetchMovieDbTask.FetchMovieDbTaskParams params =
-                f.new FetchMovieDbTaskParams(FetchMovieDbTask.MOVIE_DB_DISCOVER, pref_format, pref_sort);
-        f.execute(params);
+        preferences.unregisterOnSharedPreferenceChangeListener(this);
+        preferences = null;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        MovieDbItem item = movieDbData.get(position);
+
+        Uri u = MovieDbContract.MovieDbEntry.CONTENT_URI.buildUpon()
+                .appendPath(item.format.equals("movie") ? "film" : item.format)
+                .appendPath(String.valueOf(item.id)).build();
+        Cursor c = getActivity().getContentResolver().query(u, null, null, null, null, null);
+        item.isFavorite = c.getCount() >= 1;
+        c.close();
+
+        boolean startActivity = true;
+
         if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(movieDbData.get(position).title);
+            if (mListener.onFragmentInteraction(item))
+                startActivity = false;
         }
-        Intent intent = new Intent(getActivity().getApplicationContext(), DetailActivity.class);
-        FetchMovieDbTask.MovieDbItem item = movieDbData.get(position);
-        intent.putExtra("overview", item.overview);
-        intent.putExtra("posterPath", item.posterPath);
-        intent.putExtra("releaseDate", item.releaseDate);
-        intent.putExtra("title", item.title);
-        intent.putExtra("id", item.id);
-        intent.putExtra("popularity", item.popularity);
-        intent.putExtra("voteAverage", item.voteAverage);
-        intent.putExtra("voteCount", item.voteCount);
-        getActivity().startActivity(intent);
+
+        if (startActivity) {
+            Intent intent = getDetailIntent();
+            intent.putExtra("overview", item.overview);
+            intent.putExtra("posterPath", item.posterPath);
+            intent.putExtra("backdropPath", item.backdropPath);
+            intent.putExtra("releaseDate", item.releaseDate);
+            intent.putExtra("title", item.title);
+            intent.putExtra("id", item.id);
+            intent.putExtra("popularity", item.popularity);
+            intent.putExtra("voteAverage", item.voteAverage);
+            intent.putExtra("voteCount", item.voteCount);
+            intent.putExtra("format", item.format);
+            intent.putExtra("isFavorite", item.isFavorite);
+            getActivity().startActivity(intent);
+        }
     }
 
     /**
@@ -164,8 +139,14 @@ public class MovieGridFragment extends Fragment implements AbsListView.OnItemCli
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(String id);
+        boolean onFragmentInteraction(MovieDbItem item);
     }
 
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        loadMovieData();
+    }
+
+    public abstract void loadMovieData();
+
+    public abstract Intent getDetailIntent();
 }
