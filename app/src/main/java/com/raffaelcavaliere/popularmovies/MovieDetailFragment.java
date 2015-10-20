@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,9 +97,46 @@ public abstract class MovieDetailFragment extends Fragment {
             }
         });
 
-        loadMovieData(view);
+        if (savedInstanceState == null) {
+            loadVideos();
+            loadReviews();
+        }
+        else {
+            movieDbItem.videos = savedInstanceState.getParcelableArrayList("videos");
+            movieDbItem.reviews = savedInstanceState.getParcelableArrayList("reviews");
+        }
+
+        LinearLayout video_layout = (LinearLayout) view.findViewById(R.id.list_videos);
+        for (int i = 0; i < movieDbItem.videos.size(); i++)
+            addVideo(video_layout, movieDbItem.videos.get(i));
+
+        LinearLayout review_layout = (LinearLayout) view.findViewById(R.id.list_reviews);
+        for (int i = 0; i < movieDbItem.reviews.size(); i++)
+            addReview(review_layout, movieDbItem.reviews.get(i));
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("reviews", movieDbItem.reviews);
+        outState.putParcelableArrayList("videos", movieDbItem.videos);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void notifyReviewDataChanged() {
+        View view = getView();
+        LinearLayout review_layout = (LinearLayout) view.findViewById(R.id.list_reviews);
+        for (int i = 0; i < movieDbItem.reviews.size(); i++)
+            addReview(review_layout, movieDbItem.reviews.get(i));
+    }
+
+    public void notifyVideoDataChanged() {
+        View view = getView();
+        LinearLayout video_layout = (LinearLayout) view.findViewById(R.id.list_videos);
+        for (int i = 0; i < movieDbItem.videos.size(); i++)
+            addVideo(video_layout, movieDbItem.videos.get(i));
+
     }
 
     private Uri addToFavorites() {
@@ -217,5 +255,6 @@ public abstract class MovieDetailFragment extends Fragment {
         layout.addView(reviewLayout);
     }
 
-    public abstract void loadMovieData(final View view);
+    public abstract void loadReviews();
+    public abstract void loadVideos();
 }

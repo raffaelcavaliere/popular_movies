@@ -18,10 +18,7 @@ import java.util.ArrayList;
 
 public class FavoriteMovieDetailFragment extends MovieDetailFragment {
 
-    public void loadMovieData(final View view) {
-
-        LinearLayout video_layout = (LinearLayout) view.findViewById(R.id.list_videos);
-
+    public void loadVideos() {
         Cursor c;
         if (movieDbItem.format.equals("tv"))
             c = getActivity().getContentResolver().query(MovieDbContract.MovieDbVideoEntry.buildMovieDbVideoTvUri(movieDbItem.id), null, null, null, null);
@@ -29,7 +26,6 @@ public class FavoriteMovieDetailFragment extends MovieDetailFragment {
             c = getActivity().getContentResolver().query(MovieDbContract.MovieDbVideoEntry.buildMovieDbVideoFilmUri(movieDbItem.id), null, null, null, null);
 
         movieDbItem.videos.clear();
-
         while (c.moveToNext()) {
             String id = c.getString(c.getColumnIndex("id"));
             String key = c.getString(c.getColumnIndex("key"));
@@ -40,20 +36,15 @@ public class FavoriteMovieDetailFragment extends MovieDetailFragment {
             movieDbItem.videos.add(video);
         }
         c.close();
-
-        for(int i = 0; i < movieDbItem.videos.size(); i++)
-            addVideo(video_layout, movieDbItem.videos.get(i));
-
-
-        LinearLayout review_layout = (LinearLayout) view.findViewById(R.id.list_reviews);
-
-       if (movieDbItem.format.equals("tv"))
+    }
+    public void loadReviews() {
+        Cursor c;
+        if (movieDbItem.format.equals("tv"))
             c = getActivity().getContentResolver().query(MovieDbContract.MovieDbReviewEntry.buildMovieDbReviewTvUri(movieDbItem.id), null, null, null, null);
         else
         c = getActivity().getContentResolver().query(MovieDbContract.MovieDbReviewEntry.buildMovieDbReviewFilmUri(movieDbItem.id), null, null, null, null);
 
         movieDbItem.reviews.clear();
-
         while (c.moveToNext()) {
             String id = c.getString(c.getColumnIndex("id"));
             String author = c.getString(c.getColumnIndex("author"));
@@ -63,9 +54,5 @@ public class FavoriteMovieDetailFragment extends MovieDetailFragment {
             movieDbItem.reviews.add(review);
         }
         c.close();
-
-        for (int i = 0; i < movieDbItem.reviews.size(); i++)
-            addReview(review_layout, movieDbItem.reviews.get(i));
-
     }
 }

@@ -39,6 +39,11 @@ public abstract class MovieGridFragment extends Fragment implements AbsListView.
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if (savedInstanceState == null)
+            loadMovieData();
+        else {
+            movieDbData = savedInstanceState.getParcelableArrayList("movieDbData");
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -54,10 +59,15 @@ public abstract class MovieGridFragment extends Fragment implements AbsListView.
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
-        loadMovieData();
-
         return view;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movieDbData", movieDbData);
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public void onAttach(Activity activity) {
